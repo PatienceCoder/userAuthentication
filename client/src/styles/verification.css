@@ -1,0 +1,15 @@
+.verification-container{
+    background-color:#383737 ;
+    width: 400px;
+    padding: 10px;
+    border-radius: 10px;
+}
+.verification-container h2{
+    text-align: center;
+}
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+}

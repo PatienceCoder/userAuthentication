@@ -1,11 +1,14 @@
-.register-container{
+.login-container{
     width: 500px;
     padding: 10px;
     border-radius: 10px;
     background-color: #383737;
     margin: auto;
 }
-.register-container form{
+.login-container h2{
+    text-align: center;
+}
+.login-container form{
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -19,4 +22,8 @@ form input{
 }
 form a{
     color: rgb(153, 150, 150);
+}
+form .routes{
+    display: flex;
+    justify-content: space-between;
 }

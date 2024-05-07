@@ -32,6 +32,7 @@ transporter.verify((err,success)=>{
         console.log("Nodemailer Connection Successful")
     }
 })
+// THIS IS AN ENDPOINT FOR CHECKING REGISTRATION
 app.post('/registrationcheck',async(req,res) => {
     const {username,email,password} = req.body
     try {
@@ -71,7 +72,7 @@ app.post('/registrationcheck',async(req,res) => {
         return res.status(500).json({error:"Internal Server Error"})
     }
 })
-
+// THIS IS AN ENDPOINT FOR CHECKING THE OTP
 app.post('/verificationcheck',async (req,res) => {
     const userOtp = parseInt(req.body.otp);
     try {
@@ -85,6 +86,39 @@ app.post('/verificationcheck',async (req,res) => {
         return res.status(500).json({error:"Internal Server Error"})
     }
 })
+// THIS IS AN ENDPOINT FOR CHECKING THE LOGIN
+app.post('/logincheck',async (req,res) => {
+    const {email,password} = req.body;
+    try {
+        const findMail = await Userclass.findOne({email});
+        const findPassword = await Userclass.findOne({password});
+        if(findMail && findPassword){
+            return res.status(200).json({message:"User logged in"})
+        }
+        return res.status(401).json({message:"Invalid email or password"})
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({error:"Internal server error"})
+    }
+})
+//THIS IS AN ENDPOINT FOR RESETTING THE PASSWORD
+app.post('/forgotpassword',async (req,res) => {
+    const {email,newpassword} = req.body
+    try{
+        const checkMail = await Userclass.findOne({email});
+        if(!checkMail){
+            return res.status(401).json({message:"Email not found in our database"})
+        }
+        checkMail.password = newpassword
+        await checkMail.save();
+        return res.status(200).json({message:"Password changed successfully"})
+    }
+    catch(err){
+        console.log(err);
+        return res.status(500).json({error:"Internal server error"})
+    }
+})
+
 
 app.listen(port,() => {
     console.log("Server started");

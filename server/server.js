@@ -124,7 +124,7 @@ app.post('/forgotpassword',async (req,res) => {
     }
 })
 
-
+//PORT
 app.listen(port,() => {
     console.log("Server started");
     connectToMongoDB()

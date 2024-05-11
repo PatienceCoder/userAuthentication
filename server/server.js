@@ -3,6 +3,7 @@ import cors from 'cors'
 import connectToMongoDB from './database/connectToMongoDB.js';
 import Userclass from './models/userModel.js';
 import nodemailer from 'nodemailer'
+import bcrypt from 'bcrypt'
 import dotenv from 'dotenv'
 const port = 4010;
 dotenv.config()
@@ -40,11 +41,13 @@ app.post('/registrationcheck',async(req,res) => {
         if(checkEmail){
             return res.status(409).json({message:"Email already exists"})
         }
-        const otp = Math.floor(1000 + Math.random() * 9000)
+        const otp = Math.floor(1000 + Math.random() * 9000);
+        const salt = await bcrypt.genSalt();
+        const hashedPassword = await bcrypt.hash(password,salt)
         const newUser = new Userclass({
             username:username,
             email:email,
-            password:password,
+            password:hashedPassword,
             otp:otp
         })
         const mailOptions = {
@@ -91,7 +94,7 @@ app.post('/logincheck',async (req,res) => {
     const {email,password} = req.body;
     try {
         const findMail = await Userclass.findOne({email});
-        const findPassword = await Userclass.findOne({password});
+        const findPassword = await bcrypt.compare(password,findMail.password);
         if(findMail && findPassword){
             return res.status(200).json({message:"User logged in"})
         }
@@ -109,7 +112,9 @@ app.post('/forgotpassword',async (req,res) => {
         if(!checkMail){
             return res.status(401).json({message:"Email not found in our database"})
         }
-        checkMail.password = newpassword
+        const salt = await bcrypt.genSalt();
+        const hashedPassword = await bcrypt.hash(newpassword,salt)
+        checkMail.password = hashedPassword
         await checkMail.save();
         return res.status(200).json({message:"Password changed successfully"})
     }

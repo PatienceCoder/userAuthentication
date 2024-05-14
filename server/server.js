@@ -5,6 +5,7 @@ import Userclass from './models/userModel.js';
 import nodemailer from 'nodemailer'
 import bcrypt from 'bcrypt'
 import dotenv from 'dotenv'
+import createCookie from './cookie/createCookie.js';
 const port = 4010;
 dotenv.config()
 const app = express();
@@ -96,6 +97,7 @@ app.post('/logincheck',async (req,res) => {
         const findMail = await Userclass.findOne({email});
         const findPassword = await bcrypt.compare(password,findMail.password);
         if(findMail && findPassword){
+            const token = createCookie(findMail._id,res)
             return res.status(200).json({message:"User logged in"})
         }
         return res.status(401).json({message:"Invalid email or password"})

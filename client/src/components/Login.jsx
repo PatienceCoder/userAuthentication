@@ -4,7 +4,7 @@ import {Link, useNavigate} from 'react-router-dom'
 import '../styles/login.css'
 export default function Login() {
   const navigate = useNavigate()
-  const [userInput,setUserInput] = useState({email:"",password:""})
+  const [userInput,setUserInput] = useState({email:"",password:""});
   function handleChange(e){
     setUserInput({...userInput,[e.target.name] : e.target.value})
   }
@@ -27,7 +27,7 @@ export default function Login() {
     if(response.message === "Invalid email or password"){
       return toast.error("Invalid email or password")
     }
-    toast.success("Login successful")
+    toast.success("Login successful");
     navigate('/homepage')
   }
   return (

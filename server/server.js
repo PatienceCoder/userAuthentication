@@ -125,8 +125,18 @@ app.post('/forgotpassword',async (req,res) => {
         return res.status(500).json({error:"Internal server error"})
     }
 })
-
-
+app.post('/logout',(req,res) => {
+    try{
+        res.cookie('jwt',"",{
+            maxAge:0
+        })
+        return res.status(200).json({message:"Logged Out"})
+    }
+    catch(err){
+        console.log(err);
+        return res.status(500).json({error:"Internal Server Error"})
+    }
+})
 //PORT
 app.listen(port,() => {
     console.log("Server started");

@@ -6,16 +6,17 @@ import Verification from './components/Verification';
 import Homepage from './components/Homepage';
 import Login from './components/Login';
 import Forgotpassword from './components/Forgotpassword';
+import { useAuthContext } from '../authContext/authContext';
 
 function App() {
- 
+  const {authenticatedUser} = useAuthContext()
   return (
     <>
     <Routes>
         <Route path='/' element={<Register/>} />
         <Route path='/verification' element={<Verification/>} />
         <Route path='/homepage' element={<Homepage/>} />
-        <Route path='/login' element={<Login/>} />
+        <Route path='/login' element={authenticatedUser ? <Homepage/> : <Login/>} />
         <Route path='/register' element={<Register/>} />
         <Route path='/forgotpassword' element={<Forgotpassword/>} />
     </Routes>

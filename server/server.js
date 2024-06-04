@@ -76,6 +76,7 @@ app.post('/registrationcheck',async(req,res) => {
         return res.status(500).json({error:"Internal Server Error"})
     }
 })
+
 // THIS IS AN ENDPOINT FOR CHECKING THE OTP
 app.post('/verificationcheck',async (req,res) => {
     const userOtp = parseInt(req.body.otp);
@@ -90,6 +91,7 @@ app.post('/verificationcheck',async (req,res) => {
         return res.status(500).json({error:"Internal Server Error"})
     }
 })
+
 // THIS IS AN ENDPOINT FOR CHECKING THE LOGIN
 app.post('/logincheck',async (req,res) => {
     const {email,password} = req.body;
@@ -106,6 +108,35 @@ app.post('/logincheck',async (req,res) => {
         return res.status(500).json({error:"Internal server error"})
     }
 })
+
+//THIS IS AN ENDPOINT FOR SENDING AN EMAIL MESSAGE TO ALL USERS AT ONCE
+app.post('/send-email',async (req,res) => {
+    try {
+        const users = await Userclass.find({})
+        const allUsersEmail = users.map((user) => {
+            const mailOptions = {
+                from:"patiencecoder@gmail.com",
+                to:user.email,
+                subject:"Offer Alert",
+                html: `
+            <div style="background-color:#242424;color:white;padding:20px;border-radius:10px;text-align:center;font-size:20px;">
+                <p>Hi ${user.username}👋</p>
+                <p>I hope you are doing good we have an offer for you please checkout our app to know more about it 😃😃</p>
+            </div>
+            `
+            }
+            return transporter.sendMail(mailOptions)
+        })
+        console.log(allUsersEmail);
+        await Promise.all(allUsersEmail);
+        console.log(allUsersEmail)
+        return res.status(200).json({message:"Email sent successfully"})
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({error:"Internal Server Error"})
+    }
+})
+
 //THIS IS AN ENDPOINT FOR RESETTING THE PASSWORD
 app.post('/forgotpassword',async (req,res) => {
     const {email,newpassword} = req.body
@@ -125,6 +156,8 @@ app.post('/forgotpassword',async (req,res) => {
         return res.status(500).json({error:"Internal server error"})
     }
 })
+
+//THIS IS AN API ENDPOINT FOR LOGOUT THE USER
 app.post('/logout',(req,res) => {
     try{
         res.cookie('jwt',"",{
